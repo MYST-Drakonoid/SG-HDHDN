@@ -1,0 +1,13 @@
+{
+  "itemGroup.sgjhandhelddhd": "Example Mod Tab",
+  "block.sgjhandhelddhd.example_block": "Example Block",
+  "item.sgjhandhelddhd.example_item": "Example Item",
+
+  "sgjhandhelddhd.configuration.title": "SGJ-Handheld-DHD Configs",
+  "sgjhandhelddhd.configuration.section.sgjhandhelddhd.common.toml": "SGJ-Handheld-DHD Configs",
+  "sgjhandhelddhd.configuration.section.sgjhandhelddhd.common.toml.title": "SGJ-Handheld-DHD Configs",
+  "sgjhandhelddhd.configuration.items": "Item List",
+  "sgjhandhelddhd.configuration.logDirtBlock": "Log Dirt Block",
+  "sgjhandhelddhd.configuration.magicNumberIntroduction": "Magic Number Text",
+  "sgjhandhelddhd.configuration.magicNumber": "Magic Number"
+}
