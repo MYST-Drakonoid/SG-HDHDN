@@ -1,5 +1,9 @@
 package com.mystyryum.sgjhandhelddhd;
 
+
+import com.mystyryum.sgjhandhelddhd.blocks.EditingBlock;
+import com.mystyryum.sgjhandhelddhd.items.HandheldDHD;
+import net.minecraft.world.item.CreativeModeTabs;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -22,11 +26,19 @@ public class SGJHandheldDHD {
     // Directly reference a slf4j logger
     public static final Logger LOGGER = LogUtils.getLogger();
 
+    public static final String Mod_Name = "Stargate Handheld DHD";
+
     public SGJHandheldDHD(IEventBus modEventBus, ModContainer modContainer) {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
         NeoForge.EVENT_BUS.register(this);
+
+
+        // registering my mods stuff
+        HandheldDHD.register(modEventBus);
+        EditingBlock.register(modEventBus);
+
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
@@ -43,7 +55,11 @@ public class SGJHandheldDHD {
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
 
+        if(event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+            event.accept(HandheldDHD.HDHD);}
 
+        if(event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+            event.accept(EditingBlock.EDITING_BLOCK);}
         }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

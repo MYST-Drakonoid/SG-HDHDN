@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "north": "sgjhandhelddhd:block/editing_block_side",
+    "south": "sgjhandhelddhd:block/editing_block_side",
+    "east":  "sgjhandhelddhd:block/editing_block_side",
+    "west":  "sgjhandhelddhd:block/editing_block_side",
+    "up":    "sgjhandhelddhd:block/editing_block_top",
+    "down":  "sgjhandhelddhd:block/editing_block_bottom",
+    "particle": "sgjhandhelddhd:block/editing_block_side"
+  }
+}

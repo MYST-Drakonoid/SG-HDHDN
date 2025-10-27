@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "sgjhandhelddhd:block/editing_block" },
+    "facing=south": { "model": "sgjhandhelddhd:block/editing_block", "y": 180 },
+    "facing=east":  { "model": "sgjhandhelddhd:block/editing_block", "y": 90 },
+    "facing=west":  { "model": "sgjhandhelddhd:block/editing_block", "y": 270 }
+  }
+}
