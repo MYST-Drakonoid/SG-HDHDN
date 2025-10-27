@@ -29,12 +29,7 @@ public class EditingBlock {
                     .strength(1.5f)
                     .requiresCorrectToolForDrops()
                     .sound(SoundType.STONE)
-            ) {
-                @Override
-                protected @NotNull MapCodec<? extends HorizontalDirectionalBlock> codec() {
-                    return null;
-                }
-            });
+            ));
 
     private static <T extends Block> DeferredBlock<T> registerBlock(String name, Supplier<T> block) {
         DeferredBlock<T> toReturn = BLOCKS.register(name, block);
