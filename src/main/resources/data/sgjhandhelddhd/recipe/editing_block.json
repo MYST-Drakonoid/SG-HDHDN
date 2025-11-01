@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+
+  "key": {
+    "M": { "item": "sgjourney:advanced_memory_crystal" },
+    "N": { "item": "sgjourney:naquadah_alloy" },
+    "E": { "item": "sgjourney:advanced_materialization_crystal" }
+  },
+  "pattern": [
+    "NMN",
+    "MEM",
+    "NMN"
+  ],
+  "result": {
+    "id": "sgjhandhelddhd:editing_block",
+    "count": 1
+  }
+}

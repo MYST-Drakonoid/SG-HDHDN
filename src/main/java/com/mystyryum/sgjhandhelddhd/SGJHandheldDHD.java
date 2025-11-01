@@ -2,6 +2,7 @@ package com.mystyryum.sgjhandhelddhd;
 
 
 import com.mystyryum.sgjhandhelddhd.blocks.EditingBlock;
+import com.mystyryum.sgjhandhelddhd.blocks.GateSecBlock;
 import com.mystyryum.sgjhandhelddhd.items.HandheldDHD;
 import net.minecraft.world.item.CreativeModeTabs;
 import org.slf4j.Logger;
@@ -36,8 +37,12 @@ public class SGJHandheldDHD {
 
 
         // registering my mods stuff
+
+
+
         HandheldDHD.register(modEventBus);
         EditingBlock.register(modEventBus);
+        GateSecBlock.register(modEventBus);
 
 
         // Register the item to a creative tab
@@ -55,12 +60,20 @@ public class SGJHandheldDHD {
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
 
-        if(event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            event.accept(HandheldDHD.HDHD);}
-
-        if(event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
-            event.accept(EditingBlock.EDITING_BLOCK);}
+        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+            event.accept(HandheldDHD.HDHD);
         }
+
+        if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+            event.accept(EditingBlock.EDITING_BLOCK);
+        }
+
+
+        if (event.getTabKey() == CreativeModeTabs.FUNCTIONAL_BLOCKS) {
+            event.accept(GateSecBlock.GATE_SEC_BLOCK);
+        }
+    }
+
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent

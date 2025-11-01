@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+
+  "key": {
+    "C": { "item": "sgjourney:control_crystal" },
+    "N": { "item": "minecraft:gold_ingot" },
+    "E": { "item": "minecraft:ender_eye" },
+    "G": { "item": "sgjourney:transceiver"},
+    "D": { "item": "sgjourney:basic_interface"},
+    "P": { "item": "minecraft:paper"}
+
+  },
+  "pattern": [
+    "NGN",
+    "ECP",
+    "NDN"
+  ],
+  "result": {
+    "id": "sgjhandhelddhd:gate_sec_block",
+    "count": 1
+  }
+}

@@ -1,6 +1,7 @@
 {
 "item.sgjhandhelddhd.hdhd": "Handheld DHD",
-  "block.sgjhandhelddhd.editing_block" : "Editing Block"
+"block.sgjhandhelddhd.editing_block" : "Editing Block",
+"block.sgjhandhelddhd.gate_sec_block" : "Gate Security Block"
 
 
 }

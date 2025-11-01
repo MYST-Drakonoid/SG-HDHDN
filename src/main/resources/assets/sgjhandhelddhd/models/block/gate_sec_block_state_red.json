@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "sgjhandhelddhd:block/gate_sec_block_state_red"
+  }
+}

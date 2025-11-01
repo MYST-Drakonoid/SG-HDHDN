@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+
+  "key": {
+    "C": { "item": "sgjourney:control_crystal" },
+    "N": { "item": "sgjourney:naquadah_alloy" },
+    "E": { "item": "minecraft:ender_eye" },
+    "G": { "item": "minecraft:glass_pane"},
+    "D": { "item": "sgjourney:classic_dhd"}
+
+  },
+  "pattern": [
+    "NGN",
+    "ECE",
+    "NDN"
+  ],
+  "result": {
+    "id": "sgjhandhelddhd:hdhd",
+    "count": 1
+  }
+}
