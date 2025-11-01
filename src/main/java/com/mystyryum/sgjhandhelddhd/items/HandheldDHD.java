@@ -10,7 +10,7 @@ public class HandheldDHD {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(SGJHandheldDHD.MOD_ID);
 
     public static final DeferredItem<Item> HDHD = ITEMS.register("hdhd",
-            () -> new Item(new Item.Properties()));
+            () -> new Item(new Item.Properties().stacksTo(1)));
 
 
 

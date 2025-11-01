@@ -39,7 +39,7 @@ public class EditingBlock {
 
     private static  <T extends Block> void registerBlockItem(String name, DeferredBlock<T> block) {
         // HandheldDHD will handle item registry of blocks
-        HandheldDHD.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+        HandheldDHD.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().stacksTo(1) ));
     }
 
     public static void register(IEventBus eventBus) {
