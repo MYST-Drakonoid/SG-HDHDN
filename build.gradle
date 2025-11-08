@@ -19,6 +19,10 @@ group = mod_group_id
 
 repositories {
     // Add here additional repositories if required by some of the dependencies below.
+    flatDir {
+        dirs 'libs' // Place your Stargate Journey JAR here
+    }
+
 }
 
 base {
@@ -130,6 +134,8 @@ dependencies {
 
     // Example project dependency using a sister or child project:
     // implementation project(":myproject")
+
+    implementation('net.povstalec.sgjourney:Stargate Journey-1.21.1-0.6.42:0.6.42')
 
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
