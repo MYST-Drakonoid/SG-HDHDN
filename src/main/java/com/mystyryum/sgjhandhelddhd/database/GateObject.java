@@ -36,12 +36,14 @@ import java.util.UUID;
         /** True if this is a default server-added dimension gate */
         private boolean isDefaultGate;
 
+        private UUID creator;
+
         // --- Constructors ---
 
 
         public GateObject(String name, String dimension, boolean isPublic, int[] chevrons,
                           boolean hasIris, boolean isDefensive,
-                          List<UUID> whitelist, List<UUID> blacklist, boolean isDimensionGate) {
+                          List<UUID> whitelist, List<UUID> blacklist, boolean isDefaultGate, UUID creator) {
             this.name = name;
             this.dimension = dimension;
             this.isPublic = isPublic;
@@ -50,7 +52,8 @@ import java.util.UUID;
             this.isDefensive = isDefensive;
             this.whitelist = whitelist;
             this.blacklist = blacklist;
-            this.isDefaultGate = isDimensionGate;
+            this.isDefaultGate = isDefaultGate;
+            this.creator = creator;
         }
 
         // --- Getters and Setters ---
@@ -79,8 +82,11 @@ import java.util.UUID;
         public List<UUID> getBlacklist() { return blacklist; }
         public void setBlacklist(List<UUID> blacklist) { this.blacklist = blacklist; }
 
-        public boolean isDimensionGate() { return isDefaultGate; }
-        public void setDimensionGate(boolean dimensionGate) { isDefaultGate = dimensionGate; }
+        public boolean isDefaultGate() { return isDefaultGate; }
+        public void setDefaultGate(boolean dimensionGate) { isDefaultGate = dimensionGate; }
+
+        public UUID getCreator() {return creator; }
+        public void setCreator(UUID creator) {this.creator = creator; }
 
         // --- Utility ---
 
