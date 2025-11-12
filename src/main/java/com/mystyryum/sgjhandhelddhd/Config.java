@@ -16,13 +16,13 @@ public class Config {
 //            .comment("Whether to log the dirt block on common setup")
 //            .define("logDirtBlock", true);
 //
-//    public static final ModConfigSpec.IntValue MAGIC_NUMBER = BUILDER
-//            .comment("A magic number")
-//            .defineInRange("magicNumber", 42, 0, Integer.MAX_VALUE);
+    public static final ModConfigSpec.IntValue MINBETWEENBACKUPS = BUILDER
+            .comment("number of minutes between Gatabase Backups")
+            .defineInRange("Minutes between Backups: ", 30, 1, 9999);
 
     public static final ModConfigSpec.ConfigValue<String> DEFAULTSPAWNDIMENSION = BUILDER
             .comment("Default spawn dimension that will be loaded first into the database(default: minecraft:overworld")
-            .define("Default spawn dimension", "minecraft:overworld");
+            .define("Default spawn dimension: ", "minecraft:overworld");
 
     // a list of strings that are treated as resource locations for items
 //    public static final ModConfigSpec.ConfigValue<List<? extends String>> ITEM_STRINGS = BUILDER

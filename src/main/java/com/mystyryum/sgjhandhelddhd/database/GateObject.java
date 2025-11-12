@@ -1,6 +1,9 @@
 package com.mystyryum.sgjhandhelddhd.database;
 
 
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -13,7 +16,7 @@ import java.util.UUID;
         private String name;
 
         /** The dimension where this gate is placed (e.g. "minecraft:overworld") */
-        private String dimension;
+        private ResourceKey<Level> dimension;
 
         /** True if the gate is public, false if private */
         private boolean isPublic;
@@ -38,12 +41,14 @@ import java.util.UUID;
 
         private UUID creator;
 
+        private boolean admin;
+
         // --- Constructors ---
 
 
-        public GateObject(String name, String dimension, boolean isPublic, int[] chevrons,
+        public GateObject(String name, ResourceKey<Level> dimension, boolean isPublic, int[] chevrons,
                           boolean hasIris, boolean isDefensive,
-                          List<UUID> whitelist, List<UUID> blacklist, boolean isDefaultGate, UUID creator) {
+                          List<UUID> whitelist, List<UUID> blacklist, boolean isDefaultGate, UUID creator, boolean admin) {
             this.name = name;
             this.dimension = dimension;
             this.isPublic = isPublic;
@@ -54,6 +59,7 @@ import java.util.UUID;
             this.blacklist = blacklist;
             this.isDefaultGate = isDefaultGate;
             this.creator = creator;
+            this.admin = admin;
         }
 
         // --- Getters and Setters ---
@@ -61,8 +67,8 @@ import java.util.UUID;
         public String getName() { return name; }
         public void setName(String name) { this.name = name; }
 
-        public String getDimension() { return dimension; }
-        public void setDimension(String dimension) { this.dimension = dimension; }
+        public ResourceKey<Level> getDimension() { return dimension; }
+        public void setDimension(ResourceKey<Level> dimension) { this.dimension = dimension; }
 
         public boolean isPublic() { return isPublic; }
         public void setPublic(boolean aPublic) { isPublic = aPublic; }
@@ -88,6 +94,9 @@ import java.util.UUID;
         public UUID getCreator() {return creator; }
         public void setCreator(UUID creator) {this.creator = creator; }
 
+        public boolean getAdmin() { return admin; }
+        public void setAdmin(boolean aadmin) { admin = aadmin; }
+
         // --- Utility ---
 
         @Override
@@ -98,7 +107,9 @@ import java.util.UUID;
                     ", isPublic=" + isPublic +
                     ", hasIris=" + hasIris +
                     ", isDefensive=" + isDefensive +
-                    ", isDimensionGate=" + isDefaultGate +
+                    ", isDefaultGate=" + isDefaultGate +
+                    ", Creator="       + creator +
+                    ", Admin Only ="   + admin +
                     '}';
         }
 

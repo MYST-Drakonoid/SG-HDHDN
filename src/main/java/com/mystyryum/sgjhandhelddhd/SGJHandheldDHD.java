@@ -3,8 +3,12 @@ package com.mystyryum.sgjhandhelddhd;
 
 import com.mystyryum.sgjhandhelddhd.blocks.EditingBlock;
 import com.mystyryum.sgjhandhelddhd.blocks.GateSecBlock;
+import com.mystyryum.sgjhandhelddhd.database.DefaultGateManager;
+import com.mystyryum.sgjhandhelddhd.database.GataBase;
 import com.mystyryum.sgjhandhelddhd.items.HandheldDHD;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -78,7 +82,15 @@ public class SGJHandheldDHD {
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
+        GataBase.firstTimeTasks(event);
 
+
+    }
+
+    @SubscribeEvent
+    public void onServerStopped(ServerStoppedEvent event) {
+        LOGGER.warn("Server has stopped! Gatabase Backup started");
+        DefaultGateManager.clear();
     }
 }
 
