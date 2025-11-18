@@ -18,7 +18,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
+import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
@@ -121,9 +123,19 @@ public class GataBase {
         // Mark database as dirty to trigger save
         setDirty(true, true, null, null);
 
+
+        //adding default gates to the Registry
         if (gate.isDefaultGate() && (!gate.getAdmin())) {
             DefaultGateManager.addDimension(gate.getDimension());
         }
+
+
+        //Sending ADD event to the server
+        NeoForge.EVENT_BUS.post(new GatabaseChangedEvent(
+                null,
+                gate,
+                GatabaseChangedEvent.ChangeType.ADD
+        ));
 
         return "Add Successful";
     }
@@ -151,6 +163,14 @@ public class GataBase {
             if (target.isDefaultGate() && (!target.getAdmin())) {
                 DefaultGateManager.removeDimension(target.getDimension());
             }
+
+
+            // sending REMOVE event to the server
+            NeoForge.EVENT_BUS.post(new GatabaseChangedEvent(
+                    target,
+                    null,
+                    GatabaseChangedEvent.ChangeType.REMOVE
+            ));
 
             // Return success message
             return "Removal successful";
@@ -215,7 +235,6 @@ public class GataBase {
         // Case 2: A gate was demoted or removed as default (was default before, now isn't).
         //
         // Admin-owned gates are excluded from tracking since they are system-level.
-
         if (!target.isDefaultGate() && updatedTarget.isDefaultGate() && !updatedTarget.getAdmin()) {
             // Promote — new default gate detected, register its dimension
             DefaultGateManager.addDimension(updatedTarget.getDimension());
@@ -230,6 +249,14 @@ public class GataBase {
                 // No conflicts: mark database as dirty for saving
                 setDirty(true, false, target, updatedTarget);
                 LOGGER.info("Gate '{}' successfully edited by player {}", target.getName(), offendingPlayer);
+
+                //sending update event to the server
+                NeoForge.EVENT_BUS.post(new GatabaseChangedEvent(
+                        target,
+                        updatedTarget,
+                        GatabaseChangedEvent.ChangeType.UPDATE
+                ));
+
                 return "Gate edited successfully";
             case 1:
                 return "Edit contains duplicate name";
@@ -275,6 +302,110 @@ public class GataBase {
             LOGGER.debug("Backup operation completed (lock released).");
         }
     }
+
+    /**
+     * Fired whenever the Gatabase (server-side gate database) undergoes a change.
+     *
+     * This event is intended for server → client synchronization logic.
+     * - ADD:    A new gate was inserted into the database.
+     * - REMOVE: An existing gate was removed.
+     * - UPDATE: A gate's data was modified.
+     *
+     * The event provides:
+     *  - The original gate (if any)
+     *  - The updated gate (if any)
+     *  - The type of change that occurred
+     *
+     * Notes:
+     *  - For ADD events, targetGate is usually null and updatedTarget is the new gate.
+     *  - For REMOVE events, updatedTarget is usually null.
+     *  - For UPDATE events, both values are non-null.
+     *
+     * This event is posted on the NeoForge EVENT_BUS and must be subscribed to
+     * using @SubscribeEvent on any handler class.
+     */
+    public static class GatabaseChangedEvent extends Event {
+
+        /**
+         * The original gate involved in this change.
+         * For UPDATE: the pre-change gate data.
+         * For REMOVE: the gate being removed.
+         * For ADD: usually null.
+         */
+        private final GateObject targetGate;
+
+        /**
+         * The resulting gate involved in this change.
+         * For UPDATE: the post-change gate data.
+         * For ADD: the newly added gate.
+         * For REMOVE: usually null.
+         */
+        private final GateObject updatedTarget;
+
+        /**
+         * The type of modification that occurred.
+         */
+        private final ChangeType type;
+
+        /**
+         * Describes the category of database modification.
+         */
+        public enum ChangeType {
+            /** A new gate has been added to the database. */
+            ADD,
+
+            /** A gate has been fully removed from the database. */
+            REMOVE,
+
+            /** An existing gate's data has been modified. */
+            UPDATE
+        }
+
+        /**
+         * Constructs a new database change event.
+         *
+         * @param targetGate1
+         *      The original gate involved in the change (may be null).
+         *
+         * @param updatedTarget1
+         *      The resulting gate after the change (may be null).
+         *
+         * @param type1
+         *      The type of modification that occurred.
+         */
+        public GatabaseChangedEvent(GateObject targetGate1,
+                                    GateObject updatedTarget1,
+                                    ChangeType type1) {
+
+            this.targetGate = targetGate1;
+            this.updatedTarget = updatedTarget1;
+            this.type = type1;
+        }
+
+        /**
+         * Returns the original gate involved in the change.
+         * May be null depending on ChangeType.
+         */
+        public GateObject getTargetGate() {
+            return targetGate;
+        }
+
+        /**
+         * Returns the resulting updated gate.
+         * May be null depending on ChangeType.
+         */
+        public GateObject getUpdatedTarget() {
+            return updatedTarget;
+        }
+
+        /**
+         * Returns the type of modification that took place (ADD, REMOVE, UPDATE).
+         */
+        public ChangeType getType() {
+            return type;
+        }
+    }
+
 
 
     /**
@@ -369,6 +500,8 @@ public class GataBase {
             }
         }
     }
+
+
 
     public static String noGateExistRemoval(GateObject gate) {
         String prettyName = gate.getDimension().location().getPath();
