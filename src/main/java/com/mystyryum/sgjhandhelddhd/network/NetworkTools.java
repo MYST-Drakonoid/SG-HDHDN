@@ -193,12 +193,50 @@ public abstract class NetworkTools {
         PacketDistributor.sendToPlayer(player, payload);
     }
 
+    /**
+     * Represents a gate modification request sent between client and server.
+     * <p>
+     * GPI = Gate Packet Instruction.
+     * <p>
+     * This object expresses an *action* to perform:
+     *     • Add a gate
+     *     • Edit an existing gate
+     *     • Remove a gate
+     * <p>
+     * It contains enough data for the server to apply that change safely.
+     * <p>
+     * NOTE: This class is entirely client-safe. It contains no server-only types.
+     */
     public static class GPI {
+
+        /** The gate being acted on (always required) */
         GateObject target;
+
+        /**
+         * Optional updated gate state.
+         * Used only for Edit operations; ignored in Add/Remove.
+         */
         GateObject updateTarget;
+
+        /**
+         * A string describing the operation type:
+         *     "Add" | "Edit" | "Remove"
+         */
         String type;
+
+        /**
+         * Boolean indicating if the sender *claims* admin rights.
+         * <p>
+         * IMPORTANT:
+         *     NEVER trust this field.
+         *     Always validate admin privileges on the server using:
+         *         context.player().hasPermissions(2)
+         */
         Boolean Admin;
 
+        /**
+         * Creates a GPI packet instruction.
+         */
         public GPI(GateObject target, GateObject updateTarget, String type, Boolean Admin) {
             this.target = target;
             this.updateTarget = updateTarget;
@@ -206,20 +244,41 @@ public abstract class NetworkTools {
             this.Admin = Admin;
         }
 
+        /**
+         * Serializes this GPI into a FriendlyByteBuf for network transfer.
+         * <p>
+         * Serialization structure:
+         * <ul>
+         *  <li>1. type (String)</li>
+         *  <li>2. Admin (boolean)</li>
+         *  <li>3. hasTarget? (boolean)</li>
+         *  <li>4. target.serialize()</li>
+         *  <li>5. hasUpdateTarget? (boolean)</li>
+         *  <li>6. updateTarget.serialize()</li>
+         *  </ul>
+         */
         public void serialize(FriendlyByteBuf buf) {
+
             buf.writeUtf(type);
             buf.writeBoolean(Admin);
 
-            // Write flag: does target exist?
+            // Target GateObject
             buf.writeBoolean(target != null);
-            if (target != null)
+            if (target != null) {
                 target.serialize(buf);
+            }
 
+            // Updated Version (Edit only)
             buf.writeBoolean(updateTarget != null);
-            if (updateTarget != null)
+            if (updateTarget != null) {
                 updateTarget.serialize(buf);
+            }
         }
 
+        /**
+         * Reconstructs a GPI object from raw network bytes.
+         * Must match the write order exactly.
+         */
         public static GPI deserialize(FriendlyByteBuf buf) {
 
             String type = buf.readUtf();
@@ -238,6 +297,94 @@ public abstract class NetworkTools {
             return new GPI(target, updateTarget, type, Admin);
         }
     }
+
+
+    /**
+     * Represents a dialing request from a client to the server.
+     * <p>
+     * DIP = Dial Instruction Packet.
+     * <p>
+     * Contains:
+     *   • Chevron list (7–9 symbols)
+     *   • Dialing type (Manual, Normal, Fast)
+     *   • UUID of the requesting GDO device
+     * <p>
+     * This object is fully client-safe.
+     */
+    public static class DIP {
+
+        /**
+         * Dialing mode enum.
+         * MANUAL → Player enters symbols manually
+         * NORMAL → Standard dialing
+         * FAST   → Near-instant connections (if allowed)
+         */
+        public enum dialType {
+            MANUAL,
+            NORMAL,
+            FAST
+        }
+
+        /** Chevron address being dialed */
+        protected final int[] chev;
+
+        /** Dialing mode */
+        protected final dialType dT;
+
+        /** UUID of the player's Handheld DHD item instance */
+        protected final UUID playerGDO;
+
+        /**
+         * Create a new dial instruction.
+         */
+        public DIP(int[] chev, dialType dT, UUID playerGDO) {
+            this.chev = chev;
+            this.dT = dT;
+            this.playerGDO = playerGDO;
+        }
+
+        /**
+         * Writes this DIP into a FriendlyByteBuf.
+         *
+         * Format:
+         *   1. number of chevrons
+         *   2. each chevron ID (int)
+         *   3. enum (dialType)
+         *   4. requesting UUID
+         */
+        public void serialize(FriendlyByteBuf buf) {
+
+            buf.writeInt(chev.length);
+
+            for (int c : chev) {
+                buf.writeInt(c);
+            }
+
+            buf.writeEnum(dT);
+
+            buf.writeUUID(playerGDO);
+        }
+
+        /**
+         * Reconstructs a DIP from a received packet buffer.
+         * Must match the write order exactly.
+         */
+        public static DIP deserialize(FriendlyByteBuf buf) {
+
+            int chevronLength = buf.readInt();
+            int[] chev = new int[chevronLength];
+
+            for (int i = 0; i < chevronLength; i++) {
+                chev[i] = buf.readInt();
+            }
+
+            dialType dT = buf.readEnum(dialType.class);
+            UUID playerGDO = buf.readUUID();
+
+            return new DIP(chev, dT, playerGDO);
+        }
+    }
+
 
 
     // =====================================================================

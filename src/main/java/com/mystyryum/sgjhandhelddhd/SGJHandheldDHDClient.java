@@ -34,7 +34,7 @@ public class SGJHandheldDHDClient {
     }
 
 
-    public class ClientGateCache {
+    public static class ClientGateCache {
 
         private static List<GateObject> gateList = new ArrayList<>();
 

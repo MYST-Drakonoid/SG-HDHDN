@@ -1,6 +1,7 @@
 package com.mystyryum.sgjhandhelddhd.database;
 
 
+import com.mystyryum.sgjhandhelddhd.SGJHandheldDHD;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -333,5 +334,120 @@ import java.util.UUID;
 
 
         }
-    }
+
+        /**
+         * Validates this GateObject to ensure all fields meet safety and logical rules. SERVER SIDE ONLY
+         *
+         * <p>This validator is run when receiving data from clients or loading gates
+         * from persistent storage. It protects the server from:
+         * <ul>
+         *   <li>Malformed packets</li>
+         *   <li>Client tampering</li>
+         *   <li>Illegal Stargate configurations</li>
+         *   <li>Invalid chevron formats</li>
+         *   <li>Unauthorized creation of system-only gates (7 or 8 chevrons)</li>
+         * </ul>
+         *
+         * @return true if the GateObject is valid, false otherwise.
+         */
+        protected boolean Checker() {
+
+            // --- BASIC NULL SAFETY CHECKS ---
+            if (this.name == null) {
+                SGJHandheldDHD.LOGGER.error("Gate validation failed: name is null.");
+                return false;
+            }
+
+            if (this.dimension == null) {
+                SGJHandheldDHD.LOGGER.error("Gate validation failed: dimension is null (name={}).", this.name);
+                return false;
+            }
+
+            if (this.creator == null) {
+                SGJHandheldDHD.LOGGER.error("Gate validation failed: creator UUID is null (name={}).", this.name);
+                return false;
+            }
+
+            if (this.whitelist == null) {
+                SGJHandheldDHD.LOGGER.error("Gate validation failed: whitelist is null (name={}).", this.name);
+                return false;
+            }
+
+            if (this.blacklist == null) {
+                SGJHandheldDHD.LOGGER.error("Gate validation failed: blacklist is null (name={}).", this.name);
+                return false;
+            }
+
+
+            // --- CHEVRON LENGTH VALIDATION ---
+            if (this.chevrons == null) {
+                SGJHandheldDHD.LOGGER.error("Gate validation failed: chevrons array is null (name={}).", this.name);
+                return false;
+            }
+
+            if (this.chevrons.length > 9 || this.chevrons.length < 7) {
+                SGJHandheldDHD.LOGGER.error(
+                        "Gate validation failed: invalid chevron count {} (name={}). Expected 7–9.",
+                        this.chevrons.length, this.name
+                );
+                return false;
+            }
+
+
+            // --- SYSTEM GATE RULES (7 or 8 chevrons) ---
+            if (this.chevrons.length == 7 || this.chevrons.length == 8) {
+
+                // Must be created by server AND be default AND marked admin gate
+                if (!this.admin) {
+                    SGJHandheldDHD.LOGGER.error(
+                            "Gate validation failed: 7/8-chevron gate not marked admin (name={}).",
+                            this.name
+                    );
+                    return false;
+                }
+
+                if (!this.isDefaultGate) {
+                    SGJHandheldDHD.LOGGER.error(
+                            "Gate validation failed: 7/8-chevron gate not marked as default gate (name={}).",
+                            this.name
+                    );
+                    return false;
+                }
+
+                if (!this.creator.equals(GataBase.ADMIN_UUID)) {
+                    SGJHandheldDHD.LOGGER.error(
+                            "Gate validation failed: 7/8-chevron gate has non-admin creator {} (name={}).",
+                            this.creator, this.name
+                    );
+                    return false;
+                }
+            }
+
+
+            // --- VALIDATE CHEVRON VALUES ---
+            for (int chev : chevrons) {
+                if (chev < 0) {
+                    SGJHandheldDHD.LOGGER.error(
+                            "Gate validation failed: negative chevron value {} (name={}).",
+                            chev, this.name
+                    );
+                    return false;
+                }
+
+                if (chev > 38) {
+                    SGJHandheldDHD.LOGGER.error(
+                            "Gate validation failed: chevron value {} exceeds maximum glyph index 38 (name={}).",
+                            chev, this.name
+                    );
+                    return false;
+                }
+            }
+
+
+            // --- PASSED ALL CHECKS ---
+            return true;
+        }
+
+        }
+
 
