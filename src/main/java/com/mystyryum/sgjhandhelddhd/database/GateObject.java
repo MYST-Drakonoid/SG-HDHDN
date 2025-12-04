@@ -329,11 +329,7 @@ import java.util.UUID;
             boolean admin = Boolean.parseBoolean(parts[10]);
 
 
-            GateObject gate = new GateObject(name, dimension, isPublic, chevrons, hasIris, isDefensive, whitelist, blacklist, isDefault, creator, admin);
-
-            gate.setCreator(creator);
-
-            return gate;
+            return new GateObject(name, dimension, isPublic, chevrons, hasIris, isDefensive, whitelist, blacklist, isDefault, creator, admin);
 
 
         }

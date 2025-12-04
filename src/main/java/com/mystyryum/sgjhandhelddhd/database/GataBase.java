@@ -43,7 +43,7 @@ public class GataBase {
     private static List<GateObject> appendingList = new ArrayList<>();
 
     /** Constant representing the admin UUID. Used for gates with no specific owner. */
-    private static final UUID ADMIN_UUID = new UUID(0L, 0L);
+    public static final UUID ADMIN_UUID = new UUID(0L, 0L);
 
     /** Indicates whether a save operation is currently in progress. */
     private static boolean isSaving = false;
